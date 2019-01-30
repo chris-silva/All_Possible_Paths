@@ -1,0 +1,7 @@
+Atlanta 0 0 0 0 0 800 600
+Austin 0 0 0 200 0 160 0
+Chicago 0 0 0 0 1000 0 0
+Dallas 0 200 900 0 780 0 0
+Denver 1400 0 1000 0 0 0 0
+Houston 800 0 0 0 0 0 0
+Washington 600 0 0 1300 0 0 0

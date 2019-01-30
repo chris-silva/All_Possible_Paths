@@ -1,0 +1,162 @@
+<html>
+<head>
+	<script src="stack.js"></script>
+	<script src="GraphType.js"></script>
+</head>
+<body id="container">
+<h1 style="text-align: center">All Possible Paths</h1>
+ <img src="map.jpg" alt="US Map" style="height: 230px; display: block; margin-left: auto; margin-right: auto; width: 50%"> 
+ <h2 style="text-align: center" >Select Departure Point</h2>
+<select id="firstSelect"   > </select>
+ 
+<script>
+
+let vertices, departure, destination; 
+let secondSelect = false;
+let outputSet = false;
+var x = new GraphType();
+x.loadFromTxtFile();
+vertices = x.getVertices();
+
+
+var select = document.getElementById("firstSelect");
+
+select.style.display = "block"; 
+select.style.marginLeft = "auto";
+select.style.marginRight = "auto";
+
+let select2;
+
+select.onchange = changeFunc;
+let departurePlaceHolder = document.createElement("option");
+
+departurePlaceHolder.textContent = "Departure";
+departurePlaceHolder.disabled = true;
+select.appendChild(departurePlaceHolder);
+select.selectedIndex = 0;
+
+window.onbeforeunload = function() { select.selectedIndex = 0; }
+
+for (let i = 0; i < vertices.length; i++)
+{
+	var opt = vertices[i];
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+	
+    select.appendChild(el);
+}
+ 
+function changeFunc()
+{
+	departure = select.options[select.selectedIndex].value;
+	let city2;
+	let bodyVariable;
+	let last;
+	let header, newline;
+	bodyVariable = document.getElementById("container");
+	if (secondSelect)
+	{
+		last = document.getElementById("mySelect");
+		select2 = document.createElement("select");
+		select2.id = "mySelect";
+		
+		select2.style.display = "block";
+		select2.style.marginLeft = "auto";
+		select2.style.marginRight = "auto";
+		
+		bodyVariable.replaceChild(select2, last);
+	}
+	else
+	{
+		newline = document.createElement("br");
+		bodyVariable.appendChild(newline);
+		header = document.createElement("h2");
+		header.textContent = "Choose Destination";
+		
+		header.style.textAlign = "center";
+		
+		bodyVariable.appendChild(header);
+		select2 = document.createElement("select");
+		select2.id = "mySelect";
+		
+		select2.style.display = "block";
+		select2.style.marginLeft = "auto";
+		select2.style.marginRight = "auto";
+		
+		bodyVariable.appendChild(select2);
+		secondSelect = true;
+	}
+		
+	select2.onchange = changeFunc2;
+	
+	departurePlaceHolder = document.createElement("option");
+
+	departurePlaceHolder.textContent = "Destination";
+	departurePlaceHolder.disabled = true;
+	select2.appendChild(departurePlaceHolder);
+	select2.selectedIndex = 0;	
+	
+	for (let i = 0; i < vertices.length; i++)
+	{
+		city2 = vertices[i];
+		if (city2 != departure)
+		{
+			let opt2 = document.createElement("option");
+			opt2.textContent = city2;
+			opt2.value = city2;
+			select2.appendChild(opt2);
+		}
+	}
+}
+
+function changeFunc2()
+{
+	destination = select2.options[select2.selectedIndex].value;
+	x.hintFunc(departure, destination);
+	let result = "";
+	let allPaths = x.output();
+	console.log(allPaths);
+	for (let i = 0; i < allPaths.length; i++)
+	{
+		for (let x = 0; x < allPaths[i].cityCount; x++)
+		{
+			result = result + allPaths[i].cities[x];
+			if ( x != allPaths[i].cityCount - 1 )
+			{
+				result = result + " -> ";
+			}
+		}
+		result = result + "\n" + "Total Miles: " + allPaths[i].sum + "\n";
+		
+	}
+	
+	if (!outputSet)
+	{
+		let paragraph = document.createElement("p");
+		paragraph.id = "myP";
+		
+		paragraph.style.textAlign = "center";
+		
+		let bodyVariable = document.getElementById("container");
+		bodyVariable.appendChild(paragraph);
+		paragraph.innerText = result;
+		outputSet = true;
+		result = "";
+		x.resetGraphVariables();
+	}
+	else
+	{
+		let paragraph = document.getElementById("myP");
+		paragraph.innerText = result;
+		result = "";
+		x.resetGraphVariables();
+	}
+	
+	//Scroll Automatically to the Bottom of the Page
+	window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+}
+		
+</script>
+</body>
+</html>
